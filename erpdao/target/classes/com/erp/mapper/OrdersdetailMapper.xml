@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.OrdersdetailMapper">
+
+    <!-- 添加订单的详细信息 -->
+    <insert id="add" parameterType="Ordersdetail">
+        insert into ordersdetail(goodsId,goodsname,price,num,money,endtime,ender,storeId,state,ordersId) values
+        (#{goodsId},#{goodsname},#{price},#{num},#{money},#{endtime},#{ender},#{storeId},#{state},#{ordersId})
+    </insert>
+
+    <!-- 根据oid来查询信息 -->
+    <select id="findByOid" resultType="Ordersdetail" parameterType="Long">
+        SELECT * FROM ordersdetail WHERE odid = #{odid}
+    </select>
+
+    <!-- 来更新endtime,ender,storeId,state信息 -->
+    <update id="updateByOrderDetail" parameterType="Ordersdetail">
+        update ordersdetail
+          <set>
+              <if test="endtime !=null and endtime !=''">
+                  endtime = #{endtime},
+              </if>
+              <if test="ender !=null and ender !=''">
+                  ender = #{ender},
+              </if>
+              <if test="storeId !=null and storeId !=''">
+                  storeId = #{storeId},
+              </if>
+              <if test="state !=null and state !=''">
+                  state = #{state},
+              </if>
+          </set>
+                where  odid = #{odid}
+    </update>
+
+    <!-- 出库更新数据的操作 -->
+    <update id="updateOutByOrdersdetail" parameterType="Ordersdetail">
+        update ordersdetail
+         <set>
+             <if test="endtime !=null and endtime !=''">
+                 endtime = #{endtime},
+             </if>
+             <if test="ender !=null and ender !=''">
+                 ender = #{ender},
+             </if>
+             <if test="storeId !=null">
+                 storeId = #{storeId},
+             </if>
+             <if test="state !=null and state !=''">
+                 state = #{state},
+             </if>
+         </set>
+       where odid = #{odid}
+    </update>
+
+    <!-- 获取ordersId和state为0 -->
+    <select id="selectCountByOrdersIdAndState" parameterType="Long" resultType="Long">
+        SELECT COUNT(*) FROM ordersdetail WHERE state = '0' and ordersId=#{ordersId}
+    </select>
+</mapper>

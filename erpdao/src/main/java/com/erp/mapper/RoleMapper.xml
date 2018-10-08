@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.RoleMapper">
+
+    <resultMap id="selectRoleMenu" type="Role">
+        <id property="id" column="id"></id>
+        <result property="name" column="name"></result>
+        <collection property="menus" ofType="Menu">
+            <result column="menuid" property="menuid" />
+            <result column="menuname" property="menuname" />
+            <result column="url" property="url" />
+            <result column="icon" property="icon" />
+            <result column="pid" property="pid" />
+        </collection>
+    </resultMap>
+
+    <!-- 查询根据条件或者全部 -->
+    <select id="findAll" parameterType="Role" resultType="Role">
+        SELECT * FROM role WHERE state = '1'
+           <if test="name !=null and name !=''">
+               and name like concat ('%',#{name},'%')
+           </if>
+    </select>
+
+    <!-- 查询有效的个数 -->
+    <select id="selectCount" resultType="Integer">
+        SELECT COUNT(*) FROM role WHERE state = '1'
+    </select>
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="Role">
+        insert into role(name,state) values (#{name},'1')
+    </insert>
+
+    <!-- 根据rid获取对象信息 -->
+    <select id="getPojoById" parameterType="Long" resultType="Role">
+        SELECT * FROM role WHERE rid = #{rid}
+    </select>
+
+    <!-- 修改 -->
+    <select id="update" parameterType="Role">
+        update role
+          <set>
+              <if test="name !=null and name !=''">
+                  name = #{name},
+              </if>
+          </set>
+        where rid = #{rid}
+    </select>
+
+    <!-- 虚拟删除 -->
+    <update id="delete" parameterType="Long">
+        update role set state = '0' where rid = #{rid}
+    </update>
+
+    <!-- 无条件查询全部 -->
+    <select id="selectAll" resultType="Role">
+        select * from role
+    </select>
+
+    <!--role和emp_role中间表查询 -->
+    <select id="selectRoleByEmpRole" parameterType="Long" resultType="Role">
+        SELECT r.* FROM emp_role er,role r WHERE er.empId = #{eid} AND er.roleId = r.rid
+    </select>
+
+    <!-- 查询role和menu一起 -->
+    <select id="getRoleMenuByRid" parameterType="Long" resultMap="selectRoleMenu">
+        SELECT r.*,m.*
+        FROM role r,role_menu rm,menu m
+        WHERE rid = #{rid} AND r.rid = rm.roleId AND rm.menuId = m.menuId
+    </select>
+
+</mapper>

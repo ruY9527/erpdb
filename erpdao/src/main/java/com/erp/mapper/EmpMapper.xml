@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.EmpMapper">
+    <!-- 获取全部的信息操作 -->
+    <select id="findAll" resultMap="findAllEmpAndDeptName">
+        SELECT e.*,d.name as dname,d.did FROM emp e,dept d WHERE d.did = e.deptId and e.state = '1'
+    </select>
+
+    <resultMap id="findAllEmpAndDeptName" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="username" column="username"/>
+        <result property="pwd" column="pwd"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="email" column="email"/>
+        <result property="tele" column="tele" />
+        <result property="address" column="address" />
+        <result property="birthday" column="birthday"/>
+        <association property="dept" javaType="Dept">
+            <id property="did" column="deptId"/>
+            <result property="name" column="dname"/>
+        </association>
+    </resultMap>
+
+    <resultMap id="selectEmpByRole" type="Emp">
+        <id property="eid" column="eid"/>
+        <result property="username" column="username"/>
+        <result property="pwd" column="pwd"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="email" column="email"/>
+        <result property="tele" column="tele" />
+        <result property="address" column="address" />
+        <result property="birthday" column="birthday"/>
+        <collection property="roles" ofType="Role">
+            <id property="rid" column="rid"></id>
+            <result property="name" column="rname"></result>
+        </collection>
+    </resultMap>
+
+    <!-- 提取判断的公共信息 -->
+    <sql id="ifSqlAll">
+        <if test="username !=null and username !=''">
+            and  e.username like concat('%',#{username},'%')
+        </if>
+        <if test="name != null and name !=''">
+            and e.name like concat('%',#{name},'%')
+        </if>
+        <if test="gender !=null">
+            and e.gender = #{gender}
+        </if>
+        <if test="email !=null and email !=''">
+            and e.email like concat('%',#{email},'%')
+        </if>
+        <if test="tele != null and tele !=''">
+            and e.tele like concat('%',#{tele},'%')
+        </if>
+        <if test="address != null and address !=''">
+            and e.address like concat('%',#{address},'%')
+        </if>
+    </sql>
+
+    <sql id="updateSql">
+        <if test="username !=null and username !=''">
+            username = #{username},
+        </if>
+        <if test="name !=null and name !=''">
+            name = #{name},
+        </if>
+        <if test="gender != nul">
+            gender = #{gender},
+        </if>
+        <if test="email != null and email !=''">
+            email = #{email},
+        </if>
+        <if test="tele !=null and tele !=''">
+            tele = #{tele},
+        </if>
+        <if test="address != null and address !=''">
+            address = #{address},
+        </if>
+        <if test="birthday != null and birthday!=''">
+            birthday = #{birthday},
+        </if>
+        <if test="dept !=null and dept !=''">
+            <if test="dept.did !=null and dept.did !=''">
+                deptId = #{dept.did},
+            </if>
+        </if>
+    </sql>
+
+    <!-- 添加Emp信息 -->
+    <insert id="addEmp" parameterType="Emp">
+        insert into emp(username,pwd,name,gender,email,tele,address,birthday,deptId,state) values
+        (#{username},#{pwd},#{name},#{gender},#{email},#{tele},#{address},#{birthday},#{dept.did},#{state})
+    </insert>
+
+    <!-- 根据id去删除对象信息 -->
+   <!-- <delete id="deleteEmp" parameterType="Long">
+        delete from emp where eid = #{id}
+    </delete>-->
+
+    <!-- 虚拟删除 -->
+    <update id="deleteEmp" parameterType="Long">
+        update emp set state = '0' where eid = #{id}
+    </update>
+
+
+    <!-- 根据条件查询 -->
+    <select id="selectByEmp" resultMap="findAllEmpAndDeptName" parameterType="Emp">
+        select e.*,d.name as dname ,d.did from emp e,dept d where d.did = e.deptId and e.state = '1'
+              <include refid="ifSqlAll"/>
+              <if test="birthday !=null and birthday !=''">
+                  and birthday >= #{birthday}
+              </if>
+              <if test="birthdays != null and birthdays !=''">
+                  and #{birthdays} >= birthday
+              </if>
+              <if test="dept != null and dept !=''">
+                  <if test="dept.did !=null and dept.did !=''">
+                      and deptId = #{dept.did}
+                  </if>
+              </if>
+    </select>
+
+    <!-- 获取全部个数信息 -->
+    <select id="getCount" resultType="Integer">
+        SELECT COUNT(*) FROM emp where state = '1'
+    </select>
+
+    <!-- 根据一个id获取一个实体对象 -->
+    <select id="getEmpById" parameterType="Long" resultMap="findAllEmpAndDeptName">
+        SELECT e.*,d.name as dname,d.did FROM emp e,dept d WHERE d.did = e.deptId and e.eid = #{id}
+    </select>
+
+    <!-- 根据username和pwd来判断是否登录的操作 -->
+    <select id="findEmpByUsernameAndPwd" parameterType="String" resultType="Emp">
+        SELECT * FROM emp WHERE username = #{username} AND pwd = #{pwd} and state = '1'
+    </select>
+
+    <!-- 对前端传递的id和密码进来判断用户 -->
+    <select id="checkEmpByEidAndPwd" resultType="Emp">
+        select * from emp where eid = #{eid} and pwd = #{pwd} and state = '1'
+    </select>
+
+    <!-- 根据eid来更新密码操作 -->
+    <update id="updatePwdByEid">
+        update emp
+        <set>
+            <if test="pwd != null and pwd !=''">
+                pwd = #{pwd},
+            </if>
+        </set>
+         where eid = #{eid}
+    </update>
+
+    <!-- 查询全部信息 -->
+    <select id="selectAll" resultType="Emp">
+        select * from emp where state = '1'
+    </select>
+
+    <!-- 修改emp操作 -->
+    <update id="updateEmp" parameterType="Emp">
+        update emp
+        <set>
+            <if test="username !=null and username !=''">
+                username = #{username},
+            </if>
+            <if test="name !=null and name !=''">
+                name = #{name},
+            </if>
+            <if test="gender !=null">
+                gender = #{gender},
+            </if>
+            <if test="email !=null and email !=''">
+                email = #{email},
+            </if>
+            <if test="tele !=null and tele !=''">
+                tele = #{tele},
+            </if>
+            <if test="address !=null and address !=''">
+                address = #{address},
+            </if>
+            <if test="birthday !=null and birthday !=''">
+                birthday = #{birthday},
+            </if>
+            <if test="dept !=null and dept !=''">
+                <if test="dept.did !=null">
+                    deptId = #{dept.did},
+                </if>
+            </if>
+        </set>
+        where eid = #{eid}
+    </update>
+
+    <!-- 查询emp和role的sql -->
+    <select id="selectEmpAndRole" resultMap="selectEmpByRole" parameterType="Long">
+      SELECT e.*,r.rid,r.name AS rname
+      FROM emp e,emp_role er,role r
+      WHERE   e.eid = #{eid} AND e.eid = er.empId AND er.roleId= r.rid and e.state = '1'
+    </select>
+
+</mapper>

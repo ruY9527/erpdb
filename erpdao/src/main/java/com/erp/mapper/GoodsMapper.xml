@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.GoodsMapper">
+
+    <!-- 进行一对一的关系映射 -->
+    <resultMap id="goodsMap" type="Goods">
+        <id property="gsid" column="gsid"></id>
+        <result property="name" column="name"></result>
+        <result property="origin" column="origin"></result>
+        <result property="producer" column="producer"></result>
+        <result property="unit" column="unit"></result>
+        <result property="inprice" column="inprice"></result>
+        <result property="outprice" column="outprice"></result>
+        <result property="state" column="state"></result>
+        <association property="goodsType" javaType="GoodsType">
+            <id property="gid" column="gid"></id>
+            <result property="name" column="gname"></result>
+        </association>
+    </resultMap>
+
+    <!-- 查询获取全部信息 -->
+    <select id="findAll" resultMap="goodsMap">
+         SELECT g.*,gs.name AS gname FROM goodstype gs ,goods g WHERE gs.gid = g.goodstypeId
+            <if test="name !=null and name !=''">
+                and g.name like concat('%',#{name},'%')
+            </if>
+            <if test="origin !=null and origin !=''">
+                and g.origin like concat('%',#{origin},'%')
+            </if>
+            <if test="producer !=null and producer !=''">
+                and g.producer like concat('%',#{producer},'%')
+            </if>
+            <if test="unit !=null and unit !=''">
+                and g.unit like concat('%',#{unit},'%')
+            </if>
+            <if test="inprice !=null">
+                and g.inprice = #{inprice}
+            </if>
+            <if test="outprice !=null">
+                and g.outprice = #{outprice}
+            </if>
+            <if test="goodsType !=null">
+                <if test="goodsType.gid !=null">
+                    and g.goodstypeId = #{goodsType.gid}
+                </if>
+            </if>
+    </select>
+
+    <!-- 添加数据入库-->
+    <insert id="add" parameterType="Goods">
+        insert into goods(name,origin,producer,unit,inprice,outprice,goodstypeId,state) values
+                          (#{name},#{origin},#{producer},#{unit},#{inprice},#{outprice},#{goodsType.gid},'1')
+    </insert>
+
+    <!-- 根据一个gsid获取一个对象 -->
+    <select id="getPojoById" parameterType="Long" resultType="Goods">
+        select * from goods where gsid = #{gsid} and state = '1'
+    </select>
+
+    <!-- 虚拟删除，不对数据进行真的删除-->
+    <update id="delete" parameterType="Long">
+        update goods set state = '0' where gsid = #{gsid}
+    </update>
+
+    <!-- 根据goods修改 -->
+    <update id="update" parameterType="Goods">
+        updtae goods
+         <set>
+             <if test="name !=null and name !=''">
+                 name = #{name},
+             </if>
+             <if test="origin !=null and origin!=''">
+                 origin = #{origin},
+             </if>
+             <if test="producer !=null and producer !=''">
+                 producer = #{producer},
+             </if>
+             <if test="unit !=null and unit !=''">
+                 unit = #{unit},
+             </if>
+             <if test="inprice !=null">
+                 inprice = #{inprice},
+             </if>
+             <if test="outprice !=null">
+                 outprice = #{outprice},
+             </if>
+             <if test="goodsType !=null and goodsType !=''">
+                 <if test="goodsType.gid !=null">
+                     #{goodstypeId} = #{goodsType.gid}
+                 </if>
+             </if>
+         </set>
+        where gsid = #{gsid}
+    </update>
+
+
+    <!-- 查询已经入库的商品,去除重复查询 -->
+    <select id="findAllBySalesReturn" resultType="Goods" parameterType="String">
+        SELECT DISTINCT g.*
+        FROM orders o,ordersdetail od, goods g
+        WHERE o.state = '3' AND od.ordersId = o.oid AND od.goodsId = g.gsid and o.supplierId = #{msg}
+    </select>
+
+    <!-- 获取有效的个数 -->
+    <select id="getCount" resultType="Integer">
+        SELECT COUNT(*) FROM goods WHERE state = '1'
+    </select>
+
+    <!-- 根据名字来查询多个 -->
+    <select id="findByName" resultMap="goodsMap" parameterType="String">
+        SELECT g.*,gs.name AS gname FROM goodstype gs ,goods g WHERE gs.gid = g.goodstypeId
+         <if test="name !=null and name !=''">
+             and g.name = #{name}
+         </if>
+    </select>
+</mapper>

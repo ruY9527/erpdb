@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.StoredetailMapper">
+    
+    <resultMap id="storedetailMap" type="StoreDetail">
+        <id property="sdid" column="sdid"/>
+        <result property="num" column="num" />
+        <association property="store" javaType="Store">
+            <id property="sid" column="sid"/>
+            <result property="name" column="name" />
+        </association>
+        <association property="goods" javaType="Goods">
+            <id property="gsid" column="gsid"/>
+            <result property="name" column="gname" />
+            <result property="origin" column="origin" />
+            <result property="producer" column="producer" />
+            <result property="unit" column="unit" />
+            <result property="inprice" column="inprice" />
+            <result property="outprice" column="outprice" />
+        </association>
+    </resultMap>
+
+    <!-- 插入信息语句 -->
+    <insert id="add" parameterType="StoreDetail">
+        insert into storedetail(storeId,goodsId,num) values (#{storeId},#{goodsId},#{num})
+    </insert>
+
+    <!-- 根据goodsId和storeId信息来获取 -->
+    <select id="findByGoogsId" parameterType="Long" resultType="StoreDetail">
+        select * from storedetail where goodsId = #{goodsId} and storeId= #{storeId}
+    </select>
+
+    <!-- 来更新数据库中操作 -->
+    <update id="updateNumBygoodsIdAndstoreId" parameterType="StoreDetail">
+        update storedetail set num = #{num} where goodsId = #{goodsId} and storeId= #{storeId}
+    </update>
+
+    <!-- 根据goodsId和storeId来获取信息 -->
+    <select id="findByGoodsIdAndStoreId" resultType="StoreDetail" parameterType="Long">
+        select * from storedetail where goodsId = #{goodsId} and storeId = #{storeId}
+    </select>
+
+
+    <!-- 查询全部信息 -->
+    <select id="findAll" resultMap="storedetailMap" parameterType="StoreDetail">
+        SELECT sd.num,sd.sdid,s.*,g.name as gname
+        FROM storedetail sd ,store s,goods g
+        WHERE sd.storeId = s.sid AND sd.goodsId = g.gsid
+        <if test="goodsId != null">
+            and goodsId = #{goodsId}
+        </if>
+        <if test="storeId !=null">
+            and storeId = #{storeId}
+        </if>
+    </select>
+
+    <!-- 根据GoodsId来获取store的信息 -->
+    <select id="selectStoreByGoodsId" parameterType="Long" resultType="Store">
+        SELECT s.* FROM store s,storedetail sd WHERE sd.goodsId = #{goodsId} AND sd.storeId = s.sid
+    </select>
+</mapper>

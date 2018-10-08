@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.erp.mapper.RoleMenuSetMapper">
+
+
+    <!-- 添加中间表 -->
+    <insert id="add" parameterType="RoleMenu">
+        insert into role_menu values (#{roleId},#{menuId})
+    </insert>
+
+    <!-- 做查询是否已经存在的操作 -->
+    <select id="selectCountByRid" parameterType="Long" resultType="Integer">
+        select count(*) from role_menu where roleId = #{rid}
+    </select>
+
+    <!-- 存在，进行全部删除的操作 -->
+    <delete id="deleteAllByRid" parameterType="Long">
+        delete from role_menu where roleId = #{rid}
+    </delete>
+
+</mapper>

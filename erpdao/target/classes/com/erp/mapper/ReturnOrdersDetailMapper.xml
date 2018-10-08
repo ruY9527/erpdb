@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.ReturnOrdersDetailMapper">
+
+    <resultMap id="returnOrderDetailSelect" type="ReturnOrdersDetail">
+        <id property="rosd" column="rosd"></id>
+        <result property="goodsId" column="goodsId"></result>
+        <result property="goodsName" column="goodsName"></result>
+        <result property="price" column="price"></result>
+        <result property="num" column="num"></result>
+        <result property="money" column="money"></result>
+        <result property="endtime" column="odendtime"></result>
+        <result property="ender" column="odender"></result>
+        <result property="storeId" column="storeId"></result>
+        <result property="state" column="odstate"></result>
+        <result property="returnordersId" column="returnordersId"></result>
+        <association property="returnOrders" javaType="ReturnOrders">
+            <id column="roid" property="roid"></id>
+            <result column="createtime" property="createtime"></result>
+            <result column="checktime" property="checktime"></result>
+            <result column="endtime" property="endtime"></result>
+            <result column="type" property="type"></result>
+            <result column="createer" property="createer"></result>
+            <result column="checker" property="checker"></result>
+            <result column="ender" property="ender"></result>
+            <result column="supplierId" property="supplierId"></result>
+            <result column="totalmoney" property="totalmoney"></result>
+            <result column="state" property="state"></result>
+            <result column="waybillsn" property="waybillsn"></result>
+            <result column="ordersOid" property="ordersOid"></result>
+        </association>
+    </resultMap>
+
+    <!-- 添加信息 -->
+    <insert id="add" parameterType="ReturnOrdersDetail">
+        insert into returnordersdetail (goodsId,goodsName,price,num,money,state,returnordersId) values
+                                        (#{goodsId},#{goodsName},#{price},#{num},#{money},#{state},#{returnordersId})
+    </insert>
+
+
+    <!-- 根据rosd获取出pojo信息 -->
+    <select id="selectPojoByRosd" parameterType="Long" resultMap="returnOrderDetailSelect">
+        SELECT r.*,od.rosd,od.goodsId,od.goodsName,od.price,od.num,od.money,od.endtime AS odendtime,od.ender AS odender,od.storeId,od.state AS odstate
+        FROM  returnorders r,returnordersdetail od
+        WHERE od.rosd = #{rosd} AND od.returnordersId = r.roid
+    </select>
+
+    <!-- 修改endtime,ender,storeId,state操作 -->
+    <update id="updateOutBank" parameterType="ReturnOrdersDetail">
+        update returnordersdetail
+         <set>
+             <if test="endtime !=null and endtime !=''">
+                 endtime = #{endtime},
+             </if>
+             <if test="ender !=null">
+                 ender = #{ender},
+             </if>
+             <if test="state !=null and state !=''">
+                 state = #{state},
+             </if>
+             <if test="storeId !=null">
+                 storeId = #{storeId},
+             </if>
+         </set>
+           where rosd = #{rosd}
+    </update>
+
+    <!-- 查询一下是否全部更新的操作 -->
+    <select id="selectCountByReturnOrdersId" parameterType="Long" resultType="Integer">
+        SELECT COUNT(*) FROM returnordersdetail WHERE state = '0' AND returnordersId = #{returnordersId}
+    </select>
+</mapper>

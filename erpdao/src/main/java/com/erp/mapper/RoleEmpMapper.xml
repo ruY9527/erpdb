@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.RoleEmpMapper">
+
+
+    <!-- emp和role中间表添加数据 -->
+    <insert id="add" parameterType="RoleEmp">
+        insert into emp_role values (#{empId},#{roleId})
+    </insert>
+
+    <!-- 查询之前判断存不存在 -->
+    <select id="selectHaveByEid" resultType="Integer" parameterType="Long">
+        select count(*) from emp_role where empId= #{eid}
+    </select>
+
+    <!-- 添加之前的删除操作 -->
+    <delete id="deleteAllByEid" parameterType="Long">
+        delete from emp_role where empId = #{eid}
+    </delete>
+
+</mapper>

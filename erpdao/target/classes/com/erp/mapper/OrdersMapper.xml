@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.OrdersMapper">
+
+    <!-- 一对一查询的resultMap结果集 -->
+    <resultMap id="ordersMap" type="Orders">
+        <id property="oid" column="oid"/>
+        <result property="createtime" column="createtime" />
+        <result property="checktime" column="checktime" />
+        <result property="starttime" column="starttime" />
+        <result property="endtime" column="endtime" />
+        <result property="type" column="type" />
+        <result property="checker" column="checker"/>
+        <result property="starter" column="starter"/>
+        <result property="ender" column="ender" />
+        <result property="totalmoney" column="totalmoney" />
+        <result property="state" column="state" />
+        <result property="waybillsn" column="waybillsn" />
+        <association property="emp" javaType="Emp">
+            <id property="eid" column="eid" />
+            <result property="name" column="name" />
+        </association>
+        <association property="supplier" javaType="Supplier">
+            <id property="suid" column="suid" />
+            <result property="name" column="sname" />
+        </association>
+        <collection property="ordersdetailList" ofType="Ordersdetail">
+            <id property="odid" column="odid" />
+            <result property="goodsId" column="goodsId" />
+            <result property="goodsname" column="goodsname" />
+            <result property="price" column="osprice" />
+            <result property="num" column="osnum" />
+            <result property="money" column="osmoney" />
+            <result property="endtime" column="osendtime" />
+            <result property="ender" column="osender" />
+            <result property="storeId" column="storeId" />
+            <result property="state" column="osstate" />
+            <result property="ordersId" column="ordersId" />
+
+        </collection>
+    </resultMap>
+
+    <!-- 第二次使用resultMap来映射 -->
+    <resultMap id="ordersMap2" type="Orders">
+        <id property="oid" column="oid"/>
+        <result property="createtime" column="createtime" />
+        <result property="checktime" column="checktime" />
+        <result property="starttime" column="starttime" />
+        <result property="endtime" column="endtime" />
+        <result property="type" column="type" />
+        <result property="createer" column="createer"/>
+        <result property="checker" column="checker"/>
+        <result property="starter" column="starter"/>
+        <result property="ender" column="ender" />
+        <result property="totalmoney" column="totalmoney" />
+        <result property="state" column="state" />
+        <result property="waybillsn" column="waybillsn" />
+        <association property="supplier" javaType="Supplier">
+            <id property="suid" column="suid" />
+            <result property="name" column="name" />
+            <result property="address" column="address" />
+            <result property="contact" column="contact" />
+            <result property="tele" column="tele" />
+            <result property="email" column="email" />
+            <result property="type" column="stype" />
+        </association>
+        <collection property="ordersdetailList" ofType="Ordersdetail">
+            <id property="odid" column="odid" />
+            <result property="goodsId" column="goodsId" />
+            <result property="goodsname" column="goodsname" />
+            <result property="price" column="osprice" />
+            <result property="num" column="osnum" />
+            <result property="money" column="osmoney" />
+            <result property="endtime" column="osendtime" />
+            <result property="ender" column="osender" />
+            <result property="storeId" column="storeId" />
+            <result property="state" column="osstate" />
+            <result property="ordersId" column="ordersId" />
+        </collection>
+    </resultMap>
+    
+    <!-- 插入信息，同时返回自增的主键id数值回去 -->
+    <insert id="add" parameterType="Orders">
+      <!-- 获取主键自增的id信息 -->
+         <selectKey resultType="Long" order="AFTER" keyProperty="oid">
+             select LAST_INSERT_ID() AS oid
+         </selectKey>
+        insert into orders(createtime,checktime,starttime,endtime,type,createer,checker,
+        starter,ender,supplierId,totalmoney,state,waybillsn) values (#{createtime},#{checktime},
+        #{starttime},#{endtime},#{type},#{createer},#{checker},#{starter},#{ender},#{supplierId},
+        #{totalmoney},#{state},#{waybillsn})
+    </insert>
+
+    <!-- 查询出orders表，emp的id,name,supplier表suid,name信息 -->
+   <!-- <select id="findAllByType" resultMap="ordersMap" parameterType="String">
+        SELECT o.*,e.eid,e.name,sr.suid,sr.name AS sname FROM orders o,emp e,supplier sr WHERE
+        o.createer = e.eid AND sr.suid = o.supplierId AND o.type = #{type}
+    </select>-->
+
+    <!-- 查询需要返回的类型 -->
+    <select id="findAllByType" resultMap="ordersMap" parameterType="String">
+        SELECT o.*,e.eid,e.name,sr.suid,sr.name AS sname ,
+               os.odid,os.goodsId,os.goodsname,os.price AS osprice,os.num AS osnum,os.money AS osmoney,
+               os.endtime AS osendtime,os.ender AS osender,os.storeId,os.state AS osstate,os.ordersId
+        FROM orders o,emp e,supplier sr ,ordersdetail os WHERE
+               o.createer = e.eid AND sr.suid = o.supplierId AND o.type = #{type} AND os.ordersId = o.oid
+    </select>
+
+
+    <!-- 根据eid和oidl来需要 -->
+    <update id="updateStateByOid" parameterType="Long">
+        update orders
+           <set>
+               <if test="eid != null and eid !=''">
+                   checker = #{eid},checktime = now(), state = '1',
+               </if>
+           </set>
+                  where oid = #{oid}
+    </update>
+ <!--   <update id="updateStateByOid" parameterType="String">
+        update orders
+           <set>
+               <if test="eid !=null and eid !=''">
+                   eid = #{eid},
+               </if>
+           </set>
+               where oid = #{oid} and state = '0'
+    </update>-->
+
+    <!-- 根据创建人信息来获取 -->
+    <select id="findEmpByCreateer" parameterType="Long" resultType="Emp">
+        SELECT * FROM emp WHERE eid = #{createer}
+    </select>
+
+    <!-- 根据检查的checker来获取信息 -->
+    <select id="findEmpByChecker" parameterType="Long" resultType="Emp">
+        SELECT * FROM emp WHERE eid = #{checker}
+    </select>
+
+    <!-- 根据确认人来获取信息 -->
+    <select id="findEmpByStarter" parameterType="Long" resultType="Emp">
+        SELECT * FROM emp WHERE eid = #{starter}
+    </select>
+
+    <!-- 根据ender信息来获取 -->
+    <select id="findEmpByEnder" parameterType="Long" resultType="Emp">
+        SELECT * FROM emp WHERE eid = #{ender}
+    </select>
+
+    <!-- 查询获取出来的信息 -->
+    <sql id="seleceSql">
+        SELECT o.*,
+
+        s.suid,s.name,s.address,s.contact,s.tele,s.email,s.type AS stype,
+
+        os.odid,os.goodsId,os.goodsname,os.price AS osprice,os.num AS osnum,os.money AS osmoney,
+        os.endtime AS osendtime,os.ender AS osender,os.storeId,os.state AS osstate,os.ordersId
+        FROM orders o,ordersdetail os,supplier s
+    </sql>
+    <!-- 根据传入的参数 -->
+    <select id="findAllByTypeAndState" resultMap="ordersMap2" parameterType="String">
+        <include refid="seleceSql"/>
+        WHERE o.oid = os.ordersId AND o.supplierId = s.suid
+        <if test="type !=null and type !=''">
+            and o.type = #{type}
+        </if>
+        <if test="state !=null and state !=''">
+            and o.state = #{state}
+        </if>
+    </select>
+
+    <!-- 根据当前登录信息来查询 -->
+    <select id="myFindByType" resultMap="ordersMap2" parameterType="Map">
+        <include refid="seleceSql"/>
+        where o.createer = #{eid} AND o.type = #{type} and o.oid = os.ordersId AND o.supplierId = s.suid
+    </select>
+
+    <!-- 根据oidl来获取信息 -->
+    <select id="findForUpdateByOid" parameterType="Long" resultType="Orders">
+        SELECT * FROM orders WHERE oid = #{ordersId}
+    </select>
+
+    <!-- 出售修改endtime,ender,statez状态 -->
+    <update id="updateOutByOrders" parameterType="Orders">
+        update orders
+          <set>
+              <if test="endtime !=null and endtime !=''">
+                  endtime = #{endtime},
+              </if>
+              <if test="ender !=null and ender !=''">
+                  ender = #{ender},
+              </if>
+              <if test="state !=null and state !=''">
+                  state = #{state},
+              </if>
+          </set>
+         where oid = #{oid}
+    </update>
+
+    <!-- 确定，修改starttime,starter,state,信息 -->
+    <update id="doStart" parameterType="Long">
+        update orders set starttime = now(),starter = #{eid},state = '2' where oid = #{oid}
+    </update>
+
+    <!-- 所有的都已经入库了,修改ordera入库的状态 -->
+    <update id="updateAddStoreState" parameterType="Long">
+        UPDATE orders set endtime = now(),ender=#{eid},state = '3' where oid = #{ordersId}
+    </update>
+</mapper>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.WaybillMapper">
+
+    <sql id="wayBillSelect">
+        <if test="userId !=null">
+            and userId = #{userId}
+        </if>
+        <if test="toaddress !=null and toaddress !=''">
+            and toaddress like concat('%',#{toaddress},'%')
+        </if>
+        <if test="addressperson !=null and addressperson!=''">
+            and addressperson like concat('%',#{addressperson},'%')
+        </if>
+        <if test="tele !=null and tele !=''">
+            and tele like concat('%',#{tele},'%')
+        </if>
+        <if test="info !=null and info !=''">
+            and info like concat('',#{info},'')
+        </if>
+        <if test="state !=null and state !=''">
+            and state like concat('%',#{state},'%')
+        </if>
+    </sql>
+
+    <sql id="wayBillUpdate">
+        <if test="userId !=null">
+            userId = #{userId},
+        </if>
+        <if test="toaddress !=null and toaddress !=''">
+            toaddress = #{toaddress},
+        </if>
+        <if test="addressperson !=null and addressperson !=''">
+            addressperson = #{addressperson},
+        </if>
+        <if test="tele !=null and tele !=''">
+            tele = #{tele},
+        </if>
+        <if test="info !=null and info !=''">
+            info = #{info},
+        </if>
+        <if test="state !=null and state!=''">
+            state = #{state},
+        </if>
+    </sql>
+
+    <!-- 根据条件查询全部 -->
+    <select id="findAll" parameterType="WayBill" resultType="WayBill">
+        SELECT * FROM waybill WHERE isuse = '1'
+         <include refid="wayBillSelect"/>
+    </select>
+
+    <!-- 添加 -->
+    <insert id="add" parameterType="WayBill">
+        insert into waybill(userId,toaddress,addressperson,tele,info,state,createtime,isuse) values
+                            (#{userId},#{toaddress},#{addressperson},#{tele},#{info},#{state},#{createtime},'1')
+    </insert>
+
+    <!-- 根据sn来获取对象用于修改 -->
+    <select id="getPojoById" parameterType="Long" resultType="WayBill">
+        SELECT * FROM waybill WHERE sn = #{sn}
+    </select>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="WayBill">
+        UPDATE waybill
+          <set>
+              <include refid="wayBillUpdate"/>
+          </set>
+          where sn = #{sn}
+    </update>
+
+    <!-- 虚拟删除 -->
+    <update id="delete" parameterType="Long">
+        update waybill set isuse = '0' where sn = #{sn}
+    </update>
+
+    <!-- 获取当前有效的个数 -->
+    <select id="selectCount" resultType="Integer">
+        SELECT COUNT(*) FROM waybill WHERE isuse = '1'
+    </select>
+</mapper>

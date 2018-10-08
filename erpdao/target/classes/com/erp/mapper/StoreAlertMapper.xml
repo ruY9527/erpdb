@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.StoreAlertMapper">
+
+    <sql id="selectOneByOne">
+         SELECT a.gsid,a.name,a.storenum,b.outnum FROM
+       (SELECT g.gsid,g.name,SUM(sd.num)storenum FROM goods g,storedetail sd
+          WHERE g.gsid = sd.goodsId GROUP BY g.gsid,g.name) a,
+       (SELECT od.goodsId,SUM(od.num) outnum FROM orders o,ordersdetail od
+          WHERE od.ordersId = o.oid AND o.type ='2' AND od.state='0' GROUP BY od.goodsId) b
+          WHERE a.gsid = b.goodsId
+    </sql>
+
+    <select id="findAll" resultType="StoreAlert">
+        <include refid="selectOneByOne"></include>
+    </select>
+
+    <!-- 出现中数量不够的 -->
+    <select id="findAllWarm" resultType="StoreAlert">
+        <include refid="selectOneByOne"/> AND b.outnum > a.storenum
+    </select>
+</mapper>

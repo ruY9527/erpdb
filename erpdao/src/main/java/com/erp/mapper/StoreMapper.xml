@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.StoreMapper">
+
+    <resultMap id="StoreMap" type="Store">
+        <id property="sid" column="sid" />
+        <result property="name" column="name" />
+        <association property="emp" javaType="Emp">
+            <id property="eid" column="eid" />
+            <result property="name" column="ename" />
+            <result property="username" column="username" />
+        </association>
+    </resultMap>
+
+    <!-- 抽取查询的部分 -->
+    <sql id="selectHaveAll">
+         SELECT
+             s.*,e.name AS ename ,e.eid,e.username
+        FROM store s,emp e
+        WHERE s.empId = e.eid and s.state = '1'
+    </sql>
+
+    <!-- 查询所有得 -->
+    <select id="findAll" resultMap="StoreMap">
+        <include refid="selectHaveAll"/>
+         <if test="name !=null and name !=''">
+             and s.name like concat('%',#{name},'%')
+         </if>
+        <if test="emp !=null">
+            <if test="emp.eid !=null">
+                and s.empId = #{emp.eid}
+            </if>
+        </if>
+    </select>
+
+    <!-- 添加操作 -->
+    <insert id="add" parameterType="Store">
+        insert into store(name,empId,state) values (#{name},#{emp.eid},#{state})
+    </insert>
+
+    <!-- 虚拟删除 -->
+    <update id="delete" parameterType="Long">
+        update store set state = '0' where sid = #{sid}
+    </update>
+
+    <!-- 修改 -->
+    <update id="update" parameterType="Store">
+       update store
+        <set>
+            <if test="name !=null and name !=''">
+                name = #{name},
+            </if>
+            <if test="emp !=null">
+                <if test="emp.eid !=null">
+                    empId = #{emp.eid}
+                </if>
+            </if>
+        </set>
+         where sid  = #{sid}
+    </update>
+
+    <!-- 根据id来获取一个pojo实体类便于修改 -->
+    <select id="getPojoById" parameterType="Long" resultMap="StoreMap">
+        <include refid="selectHaveAll"/>
+          <if test="sid !=null">
+              and s.sid = #{sid}
+          </if>
+    </select>
+
+    <!-- 无条件获取全部信息 -->
+    <select id="selectAll" resultMap="StoreMap">
+        <include refid="selectHaveAll"/>
+    </select>
+
+
+    <!-- 根据empId来获取信息 -->
+    <select id="findByEmpId" parameterType="Long" resultType="Store">
+        SELECT * FROM store WHERE empId = #{empId}
+    </select>
+
+    <!-- 查询names根据仓库id -->
+    <select id="findGoodsNameByStoreId" parameterType="Long" resultType="java.util.Map">
+            SELECT g.name,sd.num
+            FROM store s,storedetail sd,goods g
+            WHERE s.sid = #{storeId} AND sd.storeId = s.sid AND sd.goodsId = g.gsid
+    </select>
+
+</mapper>

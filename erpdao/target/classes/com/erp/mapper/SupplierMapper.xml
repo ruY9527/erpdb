@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.SupplierMapper">
+    <!-- 根据type来获取信息 -->
+    <select id="findSupplierByType" parameterType="String" resultType="Supplier">
+        SELECT
+         *
+        FROM
+        supplier
+        WHERE
+        TYPE = #{type}
+        and state = '1'
+    </select>
+
+    <!-- 添加操作 -->
+    <insert id="supplier" parameterType="Supplier">
+        insert into supplier (name,address,contact,tele,email,type,state) values
+                              (#{name},#{address},#{contact},#{tele},#{email},#{type},'1')
+    </insert>
+
+    <!-- 根据suid获取对象信息 -->
+    <select id="getPojoById" parameterType="Long" resultType="Supplier">
+        select * from supplier where suid = #{suid}
+    </select>
+
+    <!-- 修改信息 -->
+    <update id="updateSupplier" parameterType="Supplier">
+        UPDATE supplier
+          <set>
+              <if test="name !=null and name !=''">
+                  name = #{name},
+              </if>
+              <if test="address !=null and address !=''">
+                  address = #{address},
+              </if>
+              <if test="contact !=null and contact != ''">
+                  contact = #{contact},
+              </if>
+              <if test="tele !=null and tele !=''">
+                  tele = #{tele},
+              </if>
+              <if test="email !=null and email !=''">
+                  email = #{email},
+              </if>
+          </set>
+         where suid = #{suid}
+    </update>
+
+    <!-- 虚拟删除,修改状态state -->
+    <update id="deleteInUpdate" parameterType="Long">
+        update supplier set state = '0' where suid = #{suid}
+    </update>
+
+    <!-- 根据supplier查询出结果 -->
+    <select id="findBySupplier" parameterType="Supplier" resultType="Supplier">
+        SELECT * FROM supplier s
+           <where>
+               <if test="name !=null and name !=''">
+                   and s.name like concat ('%',#{name},'%')
+               </if>
+               <if test="address !=null and address !=''">
+                   and s.address like concat ('%',#{address},'%')
+               </if>
+               <if test="contact !=null and contact!=''">
+                   and s.contact like concat ('%',#{contact},'%')
+               </if>
+               <if test="tele !=null and tele !=''">
+                   and s.tele like concat ('%',#{tele},'%')
+               </if>
+               <if test="email !=null and email !=null">
+                   and s.email like concat ('%',#{email},'%')
+               </if>
+               <if test="type !=null and type !=''">
+                   and s.type = #{type}
+               </if>
+           </where>
+    </select>
+
+    <!-- 获取所有的个数,根据type来获取 -->
+    <select id="selectCountByType" parameterType="String" resultType="Integer">
+        SELECT count(*) FROM supplier WHERE TYPE = #{type}
+    </select>
+
+    <!-- 添加的方法 -->
+    <insert id="add" parameterType="Supplier">
+        insert into supplier(name,address,contact,tele,email,type,state)
+        values (#{name},#{address},#{contact},#{tele},#{email},#{type},'1')
+    </insert>
+
+    <!-- 根据name和type来获取 -->
+    <select id="selectByNameAndType" resultType="Supplier" parameterType="String">
+        SELECT * FROM supplier WHERE NAME = #{name} AND TYPE = #{type}
+    </select>
+</mapper>

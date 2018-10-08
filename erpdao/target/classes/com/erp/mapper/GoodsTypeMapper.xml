@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.GoodsTypeMapper">
+
+    <sql id="selectByAll">
+           SELECT * FROM goodstype
+    </sql>
+
+    <sql id="selectTiaoJian">
+        <if test="gid !=null">
+            and gid = #{gid}
+        </if>
+        <if test="name !=null and name !=''">
+            and name like concat ('%',#{name},'%')
+        </if>
+    </sql>
+
+    <!-- 查询全部信息 -->
+    <select id="findAll" resultType="GoodsType">
+        <include refid="selectByAll" />
+         where state = '1'
+        <include refid="selectTiaoJian"/>
+    </select>
+
+    <!-- 添加,主键自增 -->
+    <insert id="add" parameterType="String">
+        insert into goodstype(name,state) values (#{name},'1')
+    </insert>
+
+    <!-- 根据gid来查询信息,为修改准备 -->
+    <select id="findForUpdate" resultType="GoodsType" parameterType="Long">
+        select * from goodstype where gid = #{gid}
+    </select>
+
+    <!-- 修改操作 -->
+    <update id="updateGoodstype" parameterType="GoodsType">
+        update goodstype
+         <set>
+             <if test="name !=null and name !=''">
+                 name = #{name},
+             </if>
+         </set>
+         where gid = #{gid}
+    </update>
+
+    <!-- 删除，将state状态修改为0 -->
+    <update id="deleteGoodsTypeById" parameterType="GoodsType">
+        update goodstype set state = '0' where gid = #{gid}
+    </update>
+
+    <!-- 获取有效的分页个数 -->
+    <select id="getCount" resultType="Integer">
+        SELECT COUNT(*) FROM goodstype WHERE state = '1'
+    </select>
+
+    <!-- 根据对象类型添加 -->
+    <insert id="addByGoodsType" parameterType="GoodsType">
+        insert into goodstype (gid,name,state) values (#{gid},#{name},'1')
+    </insert>
+
+    <!-- 根据名字和gid来查询信息 -->
+    <select id="findGoodsType" resultType="GoodsType" parameterType="GoodsType">
+        <include refid="selectByAll"/>
+         <where>
+             <include refid="selectTiaoJian"/>
+         </where>
+    </select>
+
+    <!-- 直接获取全部信息 -->
+    <select id="selectAll" parameterType="GoodsType" resultType="GoodsType">
+        SELECT gid,name FROM goodstype WHERE state = '1'
+    </select>
+</mapper>

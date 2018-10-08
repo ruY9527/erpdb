@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.ReturnOrdersMapper">
+
+    <!-- 包含详细信息的映射处理 -->
+    <resultMap id="returnOrdersOntToTwo" type="ReturnOrders">
+        <id property="roid" column="roid"></id>
+        <result property="createtime" column="createtime"></result>
+        <result property="checktime" column="checktime"></result>
+        <result property="endtime" column="endtime"></result>
+        <result property="type" column="type"></result>
+        <result property="createer" column="createer"></result>
+        <result property="checker" column="checker"></result>
+        <result property="ender" column="ender"></result>
+        <result property="supplierId" column="supplierId"></result>
+        <result property="totalmoney" column="totalmoney"></result>
+        <result property="state" column="state"></result>
+        <result property="waybillsn" column="waybillsn"></result>
+        <result property="ordersOid" column="ordersOid"></result>
+        <collection property="returnOrdersDetailList" ofType="ReturnOrdersDetail">
+            <id property="rosd" column="rosd"></id>
+            <result property="goodsId" column="goodsId"></result>
+            <result property="goodsName" column="goodsName"></result>
+            <result property="price" column="price"></result>
+            <result property="num" column="num"></result>
+            <result property="money" column="money"></result>
+            <result property="endtime" column="dendtime"></result>
+            <result property="ender" column="dender"></result>
+            <result property="storeId" column="storeId"></result>
+            <result property="state" column="dstate"></result>
+        </collection>
+    </resultMap>
+
+    <!-- 抽取出查询的公共sql -->
+    <sql id="selectHaveAll">
+        SELECT r.*,od.rosd,od.goodsId,od.goodsName,od.price,od.num,od.money,od.endtime AS dendtime,od.ender AS dender,od.storeId,od.state as dstate
+        FROM  returnorders r,returnordersdetail od
+        WHERE  r.roid = od.returnordersId
+        <if test="type !=null and type !=''">
+            and r.type = #{type}
+        </if>
+    </sql>
+
+    <!-- 根据supplierId和goodsId来获取原订单id -->
+    <select id="selectOldOidBySupplierIdAndGoodsId" resultType="java.util.Map">
+        SELECT o.oid,od.num
+        FROM orders o,ordersdetail od
+        WHERE o.supplierId = #{supplierId} AND od.goodsId = #{gsid} AND od.ordersId = o.oid;
+    </select>
+
+    <!-- 添加信息 -->
+    <insert id="add" parameterType="ReturnOrders">
+        <selectKey resultType="Long" order="AFTER" keyProperty="roid">
+            select LAST_INSERT_ID() as roid
+        </selectKey>
+        insert into returnorders (createtime,type,createer,supplierId,totalmoney,state,ordersOid) values
+                                  (#{createtime},#{type},#{createer},#{supplierId},#{totalmoney},#{state},#{ordersOid})
+    </insert>
+
+    <!-- 查询信息 -->
+    <select id="findByType" parameterType="String" resultMap="returnOrdersOntToTwo">
+        <include refid="selectHaveAll"/>
+           <if test="state !=null and state !=''">
+               and r.state = #{state}
+           </if>
+    </select>
+
+    <!-- 根据roid查询信息,来获取pojo类 -->
+    <select id="getPojoByRoid" resultType="ReturnOrders" parameterType="Long">
+        SELECT * FROM returnorders WHERE roid = #{roid}
+    </select>
+
+    <!-- 审核(修改审核人，审核时间，订单状态修改已审核) -->
+    <update id="doCheckByUpdate" parameterType="ReturnOrders">
+        update returnorders
+         <set>
+             <if test="checktime !=null and checktime !=''">
+                 checktime = #{checktime},
+             </if>
+             <if test="checker !=null">
+                 checker = #{checker},
+             </if>
+             <if test="state !=null and state !=''">
+                 state = #{state},
+             </if>
+         </set>
+          where roid = #{roid}
+    </update>
+
+    <!-- 出库的修改状态 -->
+    <update id="outBank" parameterType="ReturnOrders">
+        update returnorders
+         <set>
+             <if test="endtime !=null and endtime !=''">
+                 endtime = #{endtime},
+             </if>
+             <if test="ender !=null">
+                 ender = #{ender},
+             </if>
+             <if test="state !=null and state !=''">
+                 state = #{state},
+             </if>
+         </set>
+         where roid = #{roid}
+    </update>
+
+    <!-- 查询当前登陆人信息 -->
+    <select id="myFindByType" resultMap="returnOrdersOntToTwo">
+        <include refid="selectHaveAll"/>
+        <if test="eid !=null">
+            and createer = #{eid}
+        </if>
+    </select>
+</mapper>

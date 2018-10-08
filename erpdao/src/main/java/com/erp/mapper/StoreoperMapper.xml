@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.erp.mapper.StoreoperMapper">
+    
+    <resultMap id="storeoperMap" type="StoreOper">
+        <id property="soid" column="soid" />
+        <result property="opertime" column="opertime" />
+        <result property="num" column="num" />
+        <result property="type" column="stype" />
+        <association property="emp" javaType="Emp">
+            <id property="eid" column="eid" />
+            <result property="name" column="name" />
+        </association>
+        <association property="store" javaType="Store">
+            <id property="sid" column="sid" />
+            <result property="name" column="sname" />
+        </association>
+        <association property="goods" javaType="Goods">
+            <id property="gsid" column="gsid" />
+            <result property="name" column="gname" />
+        </association>
+    </resultMap>
+    
+    <!-- 插入数据进来 -->
+    <insert id="add" parameterType="StoreOper">
+        insert into storeoper(empId,opertime,storeId,goodsId,num,type)
+                      values (#{empId},#{opertime},#{storeId},#{goodsId},#{num},#{type})
+    </insert>
+
+    <!-- 获取全部的操作记录 -->
+    <select id="findAll" resultMap="storeoperMap" parameterType="StoreOper">
+        SELECT so.soid,so.num,so.opertime,so.type stype,e.eid,e.name,s.sid,s.name AS sname,g.gsid, g.name AS gname
+        FROM storeoper so,emp e,store s,goods g
+        WHERE so.empId = e.eid AND so.storeId = s.sid AND so.goodsId = g.gsid
+         <if test="empId != null">
+             and so.empId = #{empId}
+         </if>
+        <if test="storeId !=null">
+            and so.storeId = #{storeId}
+        </if>
+        <if test="goodsId !=null">
+            and so.goodsId = #{goodsId}
+        </if>
+        <if test="type !=null and type !=''">
+            and so.type = #{type}
+        </if>
+        <if test="opertime !=null and opertime !=''">
+            and  so.opertime >= #{opertime}
+        </if>
+        <if test="opertimes !=null and opertimes !=''">
+            and  #{opertimes} >= so.opertime
+        </if>
+    </select>
+
+    <!-- 查询总个数 -->
+    <select id="selectCountAll" resultType="Integer">
+        SELECT COUNT(*) FROM storeoper
+    </select>
+</mapper>
