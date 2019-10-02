@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	   xmlns:context="http://www.springframework.org/schema/context"
+	   xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:aop="http://www.springframework.org/schema/aop"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+	<!-- 开启@Controller注解 -->
+	<context:component-scan base-package="com.erp.controller" />
+
+	<!-- 开启@RequestMapping -->
+	<mvc:annotation-driven />
+
+	<!-- 启动切面注解 -->
+	<aop:aspectj-autoproxy/>
+
+
+	<mvc:resources location="/ui/" mapping="/ui/**" />
+	<mvc:resources location="/js/" mapping="/js/**" />
+	<mvc:resources location="/adminjs/" mapping="/adminjs/**" />
+	<mvc:resources location="/images/" mapping="/images/**" />
+	<mvc:resources location="/css/" mapping="/css/**" />
+	<mvc:resources location="/json/" mapping="/json/**" />
+	<mvc:resources location="/admin/" mapping="/admin/**"/>
+	<!--<mvc:resources location="/dept/" mapping="/dept/*.html"/>-->
+	<!--<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>-->
+
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+       <property name="DefaultEncoding" value="UTF-8"/>
+	</bean>
+
+	<!--<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**"/>
+			<mvc:exclude-mapping path="/login.jsp"/>
+			<mvc:exclude-mapping path="/emp/login"/>
+			<bean class="com.erp.Handler.MyHandlerI"/>
+		</mvc:interceptor>
+	</mvc:interceptors>-->
+
+	<!--  配置一下Swagger -->
+	<bean  class="com.erp.configuration.MySwaggerConfig"/>
+</beans>

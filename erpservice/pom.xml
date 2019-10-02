@@ -50,11 +50,20 @@
             <artifactId>spring-context-support</artifactId>
         </dependency>
         <!-- 引入分页的插件 -->
-        <dependency>
+<!--        <dependency>
             <groupId>com.github</groupId>
             <artifactId>pagehelper</artifactId>
             <version>3.4.2-fix</version>
+        </dependency>-->
+
+        <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper -->
+        <!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <version>5.1.2</version>
         </dependency>
+
 
         <dependency>
             <groupId>javax.mail</groupId>

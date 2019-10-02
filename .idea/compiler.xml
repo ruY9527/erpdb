@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="erpservice" />
+        <module name="erppojo" />
+        <module name="erpweb" />
+        <module name="erpdao" />
+        <module name="erpcommon" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="erpcommon" target="1.8" />
+      <module name="erpdao" target="1.8" />
+      <module name="erpparent" target="1.8" />
+      <module name="erppojo" target="1.8" />
+      <module name="erpservice" target="1.8" />
+      <module name="erpweb" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

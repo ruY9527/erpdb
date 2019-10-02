@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<!-- 定义一个任务类 -->
+	<bean id="job" class="com.erp.controller.job.MailJob"></bean>
+
+	<!-- 任务描述类 -->
+	<bean id="jobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="job" ></property>
+		<property name="targetMethod" value="sendStoreAlertMail"></property>
+	</bean>
+
+	<!-- 触发器 -->
+	<bean id="mailTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+		<property name="jobDetail" ref="jobDetail" ></property>
+		<!--  抽取cron最近五次的运行结果(每周的星期日的凌晨接收到邮件，来修改需不需进货新的入库)
+		    2018/10/7 0:00:00
+			2018/10/14 0:00:00
+			2018/10/21 0:00:00
+			2018/10/28 0:00:00
+			2018/11/4 0:00:00
+		 -->
+		<property name="cronExpression" value="0 0 0 ? 1-12 1 *"></property>
+	</bean>
+
+	<!-- 任务调度管理器 -->
+	<bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="mailTrigger"/>
+			</list>
+		</property>
+	</bean>
+
+<!--
+	&lt;!&ndash; 邮件发送器 &ndash;&gt;
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		&lt;!&ndash; 服务器 &ndash;&gt;
+		<property name="host" value="smtp.qq.com"></property>
+		&lt;!&ndash;端口 &ndash;&gt;
+		<property name="port" value="465"></property>
+		&lt;!&ndash; 发送邮箱协议 &ndash;&gt;
+		<property name="protocol" value="smtp"></property>
+		&lt;!&ndash; 登录用户名 &ndash;&gt;
+		<property name="username" value="1411091515@qq.com"></property>
+		&lt;!&ndash; 授权码 &ndash;&gt;
+		<property name="password" value="ewxdxgsyttchfgbc"></property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtps.ayth">true</prop>
+				<prop key="mail.smtp.ssl.enable">true</prop>
+			</props>
+		</property>
+	</bean>
+
+	&lt;!&ndash; 邮箱工具类 &ndash;&gt;
+	<bean id="emailUtils" class="com.erp.utils.EmailUtils">
+		<property name="sender" ref="javaMailSender"></property>
+	</bean>-->
+
+</beans>

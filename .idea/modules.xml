@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/erpcommon/erpcommon.iml" filepath="$PROJECT_DIR$/erpcommon/erpcommon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erpdao/erpdao.iml" filepath="$PROJECT_DIR$/erpdao/erpdao.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/erpdb.iml" filepath="$PROJECT_DIR$/.idea/erpdb.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erpparent/erpparent.iml" filepath="$PROJECT_DIR$/erpparent/erpparent.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erppojo/erppojo.iml" filepath="$PROJECT_DIR$/erppojo/erppojo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erpservice/erpservice.iml" filepath="$PROJECT_DIR$/erpservice/erpservice.iml" />
+      <module fileurl="file://$PROJECT_DIR$/erpweb/erpweb.iml" filepath="$PROJECT_DIR$/erpweb/erpweb.iml" />
+    </modules>
+  </component>
+</project>

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+	http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+	http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.2.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.2.xsd">
+
+	<!-- Shiro过滤器工厂bean,同时间接的配置9个内置的过滤器 -->
+	<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+		<!-- 安全管理:核心组件 -->
+		<property name="securityManager" ref="securityManager" />
+		<!-- 配置各种过滤器,自定义的 -->
+		<property name="filters">
+			<map>
+				<entry key="perms" value-ref="erpOrdersAuthorizationFilter"></entry>
+			</map>
+		</property>
+		<!-- 认证相关的配置,用户必须登录才可以访问的资源 -->
+		<property name="loginUrl" value="/login.jsp"/>
+		<!-- 授权相关的配置,当用户访问没有权限的时候  就会跳转到这个页面 -->
+		<property name="unauthorizedUrl" value="/error.jsp"/>
+		<!-- 过滤器定义拦截规则 -->
+		<property name="filterChainDefinitions">
+			<value>
+				/error.jsp=anon
+				/index.jsp=anon
+				/login/login=anon
+				/login/showName=anon
+				/emp/updatePwd=anon
+				/orders/*=perms["采购订单查阅","采购订单审核","采购订单确认","采购订单入库","我的采购订单", "销售订单查询","我的销售订单","销售订单出库"]
+				/goodsType/goodsType/toGoodsType=perms["商品类型"]
+				/goods/toAdd=perms["商品管理"]
+				/supplier/toSupplier=perms["供应商管理","客户管理"]
+				/store/toStore=perms["仓库"]
+				/dept/*=perms["部门"]
+				/emp/*=perms["员工"]
+				/password/repwd=perms["重置密码","用户角色管理","角色权限管理"]
+				/count/*=perms["销售统计","销售趋势表报"]
+				/*=authc
+			</value>
+		</property>
+ 	</bean>
+
+	<!-- 安全管理器 -->
+	<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+		<property name="realm" ref="erpRealm"></property>
+
+	</bean>
+
+	<!-- 自定义realm,实现登录认证和授权 -->
+	<bean id="erpRealm" class="com.erp.realm.ErpRealm">
+	</bean>
+
+	<bean id="erpOrdersAuthorizationFilter" class="com.erp.realm.ErpOrdersAuthorizationFilter"></bean>
+
+</beans>

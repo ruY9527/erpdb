@@ -1,6 +1,6 @@
-com\erp\utils\DateUtils.class
-com\erp\utils\MyResult.class
-com\erp\utils\JsonUtils.class
-com\erp\utils\StringUtils.class
-com\erp\utils\EmailUtils.class
-com\erp\utils\UuidUtils.class
+com/erp/utils/EmailUtils.class
+com/erp/utils/StringUtils.class
+com/erp/utils/MyResult.class
+com/erp/utils/UuidUtils.class
+com/erp/utils/JsonUtils.class
+com/erp/utils/DateUtils.class

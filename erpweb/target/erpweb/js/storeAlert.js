@@ -1,0 +1,32 @@
+$(function(){
+    $('#grid').datagrid({
+        title:'无数据代表当前仓库无需要出货或者仓库数量足够',
+        url:'../storeAlert/findAll',
+        columns:[[
+            {field:'gsid',title:'商品编号',width:100},
+            {field:'name',title:'商品名称',width:100},
+            {field:'storenum',title:'商品库存',width:100},
+            {field:'outnum',title:'代发货数量',width:100}
+        ]],
+        singleSelect:true,
+        rownumbers:true,
+        toolbar:[
+            {
+                text:'发送邮箱预警',
+                iconCls:'icon-add',
+                handler:function(){
+                    //调用发送邮箱服务
+                    $.ajax({
+                        url:'../storeAlert/sendMessage',
+                        type:'get',
+                        dataType:'json',
+                        success:function(rtn){
+                            $.messager.alert('提示信息',rtn.message,'info');
+                        }
+                    });
+                }
+            }
+        ]
+    });
+
+});
