@@ -63,7 +63,10 @@
       "Bash(find *)",
       "Bash(xargs *)",
       "Bash(git checkout *)",
-      "Bash(git add *)"
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(git remote *)"
     ]
   },
   "$version": 3
