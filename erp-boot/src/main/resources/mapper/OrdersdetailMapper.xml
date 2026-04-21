@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.OrdersdetailMapper">
+
+    <resultMap id="OrdersdetailResultMap" type="com.erp.pojo.Ordersdetail">
+        <id property="odid" column="odid"/>
+        <result property="ordersId" column="ordersId"/>
+        <result property="goodsId" column="goodsId"/>
+        <result property="num" column="num"/>
+        <result property="price" column="price"/>
+        <result property="money" column="money"/>
+        <result property="state" column="state"/>
+        <result property="endtime" column="endtime"/>
+        <result property="ender" column="ender"/>
+        <result property="storeId" column="storeId"/>
+    </resultMap>
+
+    <insert id="add">
+        INSERT INTO ordersdetail (ordersId, goodsId, num, price, money, state)
+        VALUES (#{ordersId}, #{goodsId}, #{num}, #{price}, #{money}, #{state})
+    </insert>
+
+    <select id="findByOid" resultMap="OrdersdetailResultMap">
+        SELECT * FROM ordersdetail WHERE odid = #{odid}
+    </select>
+
+    <update id="updateByOrderDetail">
+        UPDATE ordersdetail SET state = #{state}, endtime = #{endtime}, ender = #{ender}, storeId = #{storeId}
+        WHERE odid = #{odid}
+    </update>
+
+    <update id="updateOutByOrdersdetail">
+        UPDATE ordersdetail SET state = #{state}, endtime = #{endtime}, ender = #{ender}, storeId = #{storeId}
+        WHERE odid = #{odid}
+    </update>
+
+    <select id="selectCountByOrdersIdAndState" resultType="Long">
+        SELECT COUNT(*) FROM ordersdetail WHERE ordersId = #{ordersId} AND state = '0'
+    </select>
+
+    <update id="update">
+        UPDATE ordersdetail SET num = #{num}, price = #{price}, money = #{money}
+        WHERE odid = #{odid}
+    </update>
+
+    <delete id="delete">
+        DELETE FROM ordersdetail WHERE odid = #{odid}
+    </delete>
+
+</mapper>

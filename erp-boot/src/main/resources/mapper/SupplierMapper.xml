@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.SupplierMapper">
+
+    <resultMap id="SupplierResultMap" type="com.erp.pojo.Supplier">
+        <id property="suid" column="suid"/>
+        <result property="name" column="name"/>
+        <result property="address" column="address"/>
+        <result property="contact" column="contact"/>
+        <result property="tele" column="tele"/>
+        <result property="email" column="email"/>
+        <result property="type" column="type"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="findSupplierByType" resultMap="SupplierResultMap">
+        SELECT * FROM supplier WHERE type = #{type} AND state = '1'
+    </select>
+
+    <select id="getPojoById" resultMap="SupplierResultMap">
+        SELECT * FROM supplier WHERE suid = #{suid}
+    </select>
+
+    <insert id="add">
+        INSERT INTO supplier (name, address, contact, tele, email, type, state)
+        VALUES (#{name}, #{address}, #{contact}, #{tele}, #{email}, #{type}, '1')
+    </insert>
+
+    <update id="updateSupplier">
+        UPDATE supplier
+        SET name = #{name}, address = #{address}, contact = #{contact},
+            tele = #{tele}, email = #{email}, type = #{type}
+        WHERE suid = #{suid}
+    </update>
+
+    <update id="deleteInUpdate">
+        UPDATE supplier SET state = '0' WHERE suid = #{suid}
+    </update>
+
+    <select id="findBySupplier" resultMap="SupplierResultMap">
+        SELECT * FROM supplier WHERE state = '1'
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="type != null and type != ''">
+            AND type = #{type}
+        </if>
+    </select>
+
+    <select id="selectCountByType" resultType="Integer">
+        SELECT COUNT(*) FROM supplier WHERE type = #{type} AND state = '1'
+    </select>
+
+    <select id="selectByNameAndType" resultMap="SupplierResultMap">
+        SELECT * FROM supplier WHERE name = #{name} AND type = #{type} AND state = '1'
+    </select>
+
+</mapper>

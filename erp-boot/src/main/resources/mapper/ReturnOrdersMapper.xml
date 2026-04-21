@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.ReturnOrdersMapper">
+
+    <resultMap id="ReturnOrdersResultMap" type="com.erp.pojo.ReturnOrders">
+        <id property="roid" column="roid"/>
+        <result property="ordersOid" column="ordersOid"/>
+        <result property="createtime" column="createtime"/>
+        <result property="createer" column="createer"/>
+        <result property="checker" column="checker"/>
+        <result property="checktime" column="checktime"/>
+        <result property="ender" column="ender"/>
+        <result property="endtime" column="endtime"/>
+        <result property="supplierId" column="supplierId"/>
+        <result property="totalmoney" column="totalmoney"/>
+        <result property="type" column="type"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+</mapper>

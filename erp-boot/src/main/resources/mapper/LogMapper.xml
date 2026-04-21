@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.LogMapper">
+
+    <resultMap id="LogResultMap" type="com.erp.pojo.Log">
+        <id property="logId" column="logId"/>
+        <result property="type" column="type"/>
+        <result property="title" column="title"/>
+        <result property="remoteAddr" column="remoteAddr"/>
+        <result property="requestUri" column="requestUri"/>
+        <result property="method" column="method"/>
+        <result property="params" column="params"/>
+        <result property="exception" column="exception"/>
+        <result property="operateDate" column="operateDate"/>
+        <result property="timeout" column="timeout"/>
+        <result property="userId" column="userId"/>
+    </resultMap>
+
+    <select id="selectCountByType" resultType="java.util.Map">
+        SELECT type, COUNT(*) as count FROM mylog GROUP BY type
+    </select>
+
+</mapper>

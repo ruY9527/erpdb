@@ -24,3 +24,84 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
+### Maven template
+# Maven output directory
+target/
+
+# Maven wrapper
+!.mvn/wrapper/maven-wrapper.jar
+
+### Node.js template
+# Node.js dependencies
+node_modules/
+
+# Node.js logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node.js package lock files (optional, keep for consistency)
+# package-lock.json
+# yarn.lock
+
+### Build output
+# Frontend build output
+dist/
+
+### IDE and Editor
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# VS Code
+.vscode/
+
+# Eclipse
+.settings/
+.classpath
+.project
+.metadata/
+
+# Sublime Text
+*.sublime-workspace
+
+### OS generated files
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+### Environment and secrets
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Credentials and secrets
+*.pem
+*.key
+credentials.json
+secrets.json
+
+### Temporary files
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.bak
+*.cache
+
+### Documentation
+# Generated documentation
+site/

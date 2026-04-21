@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.EmpMapper">
+
+    <resultMap id="EmpResultMap" type="com.erp.pojo.Emp">
+        <id property="eid" column="eid"/>
+        <result property="username" column="username"/>
+        <result property="pwd" column="pwd"/>
+        <result property="name" column="name"/>
+        <result property="gender" column="gender"/>
+        <result property="email" column="email"/>
+        <result property="tele" column="tele"/>
+        <result property="address" column="address"/>
+        <result property="birthday" column="birthday"/>
+        <result property="state" column="state"/>
+        <association property="dept" javaType="com.erp.pojo.Dept">
+            <id property="did" column="did"/>
+            <result property="name" column="dname"/>
+            <result property="tele" column="dtele"/>
+        </association>
+    </resultMap>
+
+    <select id="findAll" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.state = '1'
+    </select>
+
+    <select id="selectByEmp" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.state = '1'
+        <if test="username != null and username != ''">
+            AND e.username LIKE CONCAT('%', #{username}, '%')
+        </if>
+        <if test="name != null and name != ''">
+            AND e.name LIKE CONCAT('%', #{name}, '%')
+        </if>
+    </select>
+
+    <select id="getEmpById" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.eid = #{id}
+    </select>
+
+    <select id="findEmpByUsername" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.username = #{username} AND e.state = '1'
+    </select>
+
+    <select id="findEmpByUsernameAndPwd" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.username = #{username} AND e.pwd = #{pwd} AND e.state = '1'
+    </select>
+
+    <select id="checkEmpByEidAndPwd" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.eid = #{eid} AND e.pwd = #{pwd}
+    </select>
+
+    <insert id="addEmp">
+        INSERT INTO emp (username, pwd, name, gender, email, tele, address, birthday, deptId, state)
+        VALUES (#{username}, #{pwd}, #{name}, #{gender}, #{email}, #{tele}, #{address}, #{birthday}, #{dept.did}, #{state})
+    </insert>
+
+    <update id="updateEmp">
+        UPDATE emp
+        SET name = #{name}, gender = #{gender}, email = #{email}, tele = #{tele},
+            address = #{address}, birthday = #{birthday}, deptId = #{dept.did}
+        <if test="pwd != null and pwd != ''">
+            , pwd = #{pwd}
+        </if>
+        WHERE eid = #{eid}
+    </update>
+
+    <update id="updatePwdByEid">
+        UPDATE emp SET pwd = #{pwd} WHERE eid = #{eid}
+    </update>
+
+    <delete id="deleteEmp">
+        UPDATE emp SET state = '0' WHERE eid = #{id}
+    </delete>
+
+    <select id="getCount" resultType="Integer">
+        SELECT COUNT(*) FROM emp WHERE state = '1'
+    </select>
+
+    <select id="selectAll" resultMap="EmpResultMap">
+        SELECT e.*, d.did, d.name as dname, d.tele as dtele
+        FROM emp e
+        LEFT JOIN dept d ON e.deptId = d.did
+        WHERE e.state = '1'
+    </select>
+
+</mapper>

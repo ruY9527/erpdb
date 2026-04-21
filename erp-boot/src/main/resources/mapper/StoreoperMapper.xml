@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.StoreoperMapper">
+
+    <resultMap id="StoreoperResultMap" type="com.erp.pojo.StoreOper">
+        <id property="soid" column="soid"/>
+        <result property="empId" column="empId"/>
+        <result property="opertime" column="opertime"/>
+        <result property="storeId" column="storeId"/>
+        <result property="goodsId" column="goodsId"/>
+        <result property="num" column="num"/>
+        <result property="type" column="type"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="StoreoperResultMap">
+        SELECT * FROM storeoper
+        <if test="empId != null">
+            WHERE empId = #{empId}
+        </if>
+        ORDER BY opertime DESC
+    </select>
+
+    <insert id="add">
+        INSERT INTO storeoper (empId, opertime, storeId, goodsId, num, type)
+        VALUES (#{empId}, #{opertime}, #{storeId}, #{goodsId}, #{num}, #{type})
+    </insert>
+
+    <select id="selectCountAll" resultType="Integer">
+        SELECT COUNT(*) FROM storeoper
+    </select>
+
+</mapper>

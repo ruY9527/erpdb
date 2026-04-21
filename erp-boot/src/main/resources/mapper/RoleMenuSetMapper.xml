@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.RoleMenuSetMapper">
+
+    <insert id="add">
+        INSERT INTO role_menu (roleId, menuId) VALUES (#{roleId}, #{menuId})
+    </insert>
+
+    <select id="selectCountByRid" resultType="Integer">
+        SELECT COUNT(*) FROM role_menu WHERE roleId = #{rid}
+    </select>
+
+    <delete id="deleteAllByRid">
+        DELETE FROM role_menu WHERE roleId = #{rid}
+    </delete>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.DeptMapper">
+
+    <resultMap id="DeptResultMap" type="com.erp.pojo.Dept">
+        <id property="did" column="did"/>
+        <result property="name" column="name"/>
+        <result property="tele" column="tele"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="DeptResultMap">
+        SELECT * FROM dept WHERE state = '1'
+    </select>
+
+    <select id="selectDeptByNameOrTele" resultMap="DeptResultMap">
+        SELECT * FROM dept WHERE state = '1'
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+        <if test="tele != null and tele != ''">
+            AND tele LIKE CONCAT('%', #{tele}, '%')
+        </if>
+    </select>
+
+    <select id="getTotal" resultType="Integer">
+        SELECT COUNT(*) FROM dept WHERE state = '1'
+    </select>
+
+    <insert id="add">
+        INSERT INTO dept (name, tele, state) VALUES (#{name}, #{tele}, '1')
+    </insert>
+
+    <delete id="deleteDeptById">
+        UPDATE dept SET state = '0' WHERE did = #{id}
+    </delete>
+
+    <select id="getDeptById" resultMap="DeptResultMap">
+        SELECT * FROM dept WHERE did = #{id}
+    </select>
+
+    <update id="updtaeDept">
+        UPDATE dept SET name = #{name}, tele = #{tele} WHERE did = #{did}
+    </update>
+
+    <select id="selectDeptByDept" resultMap="DeptResultMap">
+        SELECT * FROM dept WHERE state = '1'
+        <if test="name != null and name != ''">
+            AND name = #{name}
+        </if>
+    </select>
+
+</mapper>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.RoleMapper">
+
+    <resultMap id="RoleResultMap" type="com.erp.pojo.Role">
+        <id property="rid" column="rid"/>
+        <result property="name" column="name"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="RoleResultMap">
+        SELECT * FROM role WHERE state = '1'
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+    </select>
+
+    <select id="getPojoById" resultMap="RoleResultMap">
+        SELECT * FROM role WHERE rid = #{rid}
+    </select>
+
+    <select id="selectCount" resultType="Integer">
+        SELECT COUNT(*) FROM role WHERE state = '1'
+    </select>
+
+    <insert id="add">
+        INSERT INTO role (name, state) VALUES (#{name}, '1')
+    </insert>
+
+    <update id="update">
+        UPDATE role SET name = #{name} WHERE rid = #{rid}
+    </update>
+
+    <delete id="delete">
+        UPDATE role SET state = '0' WHERE rid = #{rid}
+    </delete>
+
+    <select id="selectAll" resultMap="RoleResultMap">
+        SELECT * FROM role WHERE state = '1'
+    </select>
+
+    <select id="selectRoleByEmpRole" resultMap="RoleResultMap">
+        SELECT r.* FROM role r
+        INNER JOIN emp_role er ON r.rid = er.roleId
+        WHERE er.empId = #{eid} AND r.state = '1'
+    </select>
+
+</mapper>

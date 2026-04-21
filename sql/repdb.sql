@@ -2,7 +2,7 @@
 SQLyog 企业版 - MySQL GUI v8.14 
 MySQL - 5.5.40 : Database - repdb
 *********************************************************************
-*/
+*/
 
 /*!40101 SET NAMES utf8 */;
 
@@ -52,8 +52,19 @@ CREATE TABLE `emp` (
 ) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8 CHECKSUM=1 DELAY_KEY_WRITE=1 ROW_FORMAT=DYNAMIC;
 
 /*Data for the table `emp` */
-
-insert  into `emp`(`eid`,`username`,`pwd`,`name`,`gender`,`email`,`tele`,`address`,`birthday`,`deptId`,`state`) values (1,'admin','3ef7164d1f6167cb9f2658c07d3c2f0a','超级管理员',1,'baoyang@123.com','123456789','湖北武汉','1980-8-8',1,'1'),(2,'sunwukong','5bf22b7dba77bd6d0fac75def5077a61','孙悟空',1,'swk@123.com','123456789','湖北武汉','1981-8-8',2,'1'),(3,'sunquan','4f63fd2b7860f3fc2be03744e45f8aa9','孙权',1,'sq@123.com','123456789','湖北襄阳','1982-8-8',2,'1'),(4,'kongming','90bc561e24ad10ae76c254ff9103aad5','孔明',1,'km@123.com','123456789','南阳孔明','1983-8-8',3,'1'),(5,'guanyu','5b0477a18fc0e08ccdac115bb9a54a11','关羽',1,'gy@123.com','123456789','湖北咸宁','1984-8-8',3,'1'),(6,'machao','d9aea44082e5125388b39d799b7b3b4d','马超',1,'mc@123.com','123456789','湖北咸宁','1985-8-8',3,'1'),(12,'liuhao','aa7b41fb24831b32b7d97ae0df1a9b8f','刘浩公关',0,'1616@qq.com','123123','武汉软件工程职业学院','2018-09-19',5,'1'),(13,'liang','d5893278f71f3b536f2c5f0e1baa5fc9','新武',0,'1411091514@qq.com','161262616','湖北武汉赤壁','1998-03-18',5,'1'),(14,'time','b293d1bdc3589167ff4fb614d9426225','时间',1,'16161@163.com','16464616','武软','2018-10-02',4,'1');
+-- 密码使用BCrypt加密，默认密码均为123456
+-- BCrypt格式: $2a$10$开头的60字符字符串
+-- 密码: $2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK
+insert  into `emp`(`eid`,`username`,`pwd`,`name`,`gender`,`email`,`tele`,`address`,`birthday`,`deptId`,`state`) values 
+(1,'admin','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','超级管理员',1,'baoyang@123.com','123456789','湖北武汉','1980-8-8',1,'1'),
+(2,'sunwukong','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','孙悟空',1,'swk@123.com','123456789','湖北武汉','1981-8-8',2,'1'),
+(3,'sunquan','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','孙权',1,'sq@123.com','123456789','湖北襄阳','1982-8-8',2,'1'),
+(4,'kongming','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','孔明',1,'km@123.com','123456789','南阳孔明','1983-8-8',3,'1'),
+(5,'guanyu','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','关羽',1,'gy@123.com','123456789','湖北咸宁','1984-8-8',3,'1'),
+(6,'machao','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','马超',1,'mc@123.com','123456789','湖北咸宁','1985-8-8',3,'1'),
+(12,'liuhao','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','刘浩公关',0,'1616@qq.com','123123','武汉软件工程职业学院','2018-09-19',5,'1'),
+(13,'liang','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','新武',0,'1411091514@qq.com','161262616','湖北武汉赤壁','1998-03-18',5,'1'),
+(14,'time','$2a$10$llKC0enwaYtiEGj.UzLxZu460A8RIAKaDhDl.CXQL7ukP7Wk79qyK','时间',1,'16161@163.com','16464616','武软','2018-10-02',4,'1');
 
 /*Table structure for table `emp_role` */
 
@@ -274,14 +285,19 @@ DROP TABLE IF EXISTS `store`;
 CREATE TABLE `store` (
   `sid` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '仓库id',
   `name` varchar(64) DEFAULT NULL COMMENT '仓库名称',
+  `address` varchar(255) DEFAULT NULL COMMENT '仓库地址',
   `empId` bigint(20) DEFAULT NULL COMMENT '管理员id',
   `state` varchar(8) DEFAULT NULL COMMENT '是否停用 1正常 0停用',
   PRIMARY KEY (`sid`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=gbk;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 
 /*Data for the table `store` */
 
-insert  into `store`(`sid`,`name`,`empId`,`state`) values (1,'生活用品',1,'1'),(2,'零食仓库',2,'1'),(3,'饮料用品',3,'1'),(4,'厨房用品',6,'1');
+insert  into `store`(`sid`,`name`,`address`,`empId`,`state`) values 
+(1,'生活用品','武汉市洪山区生活用品仓库',1,'1'),
+(2,'零食仓库','武汉市江汉区零食仓库',2,'1'),
+(3,'饮料用品','武汉市武昌区饮料仓库',3,'1'),
+(4,'厨房用品','武汉市汉阳区厨房仓库',6,'1');
 
 /*Table structure for table `storedetail` */
 

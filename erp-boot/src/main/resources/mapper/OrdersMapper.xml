@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.OrdersMapper">
+
+    <resultMap id="OrdersResultMap" type="com.erp.pojo.Orders">
+        <id property="oid" column="oid"/>
+        <result property="createtime" column="createtime"/>
+        <result property="checktime" column="checktime"/>
+        <result property="starttime" column="starttime"/>
+        <result property="endtime" column="endtime"/>
+        <result property="type" column="type"/>
+        <result property="createer" column="createer"/>
+        <result property="checker" column="checker"/>
+        <result property="starter" column="starter"/>
+        <result property="ender" column="ender"/>
+        <result property="supplierId" column="supplierId"/>
+        <result property="totalmoney" column="totalmoney"/>
+        <result property="state" column="state"/>
+        <result property="waybillsn" column="waybillsn"/>
+    </resultMap>
+
+    <insert id="add">
+        INSERT INTO orders (createtime, type, createer, supplierId, totalmoney, state)
+        VALUES (#{createtime}, #{type}, #{createer}, #{supplierId}, #{totalmoney}, #{state})
+    </insert>
+
+    <select id="findAllByTypeAndState" resultMap="OrdersResultMap">
+        SELECT * FROM orders WHERE type = #{type}
+        <if test="state != null and state != ''">
+            AND state = #{state}
+        </if>
+        ORDER BY createtime DESC
+    </select>
+
+    <update id="updateStateByOid">
+        UPDATE orders SET state = '1', checker = #{eid}, checktime = NOW() WHERE oid = #{oid}
+    </update>
+
+    <select id="myFindByType" resultMap="OrdersResultMap">
+        SELECT * FROM orders WHERE type = #{type} AND createer = #{eid}
+        <if test="state != null and state != ''">
+            AND state = #{state}
+        </if>
+        ORDER BY createtime DESC
+    </select>
+
+    <select id="findForUpdateByOid" resultMap="OrdersResultMap">
+        SELECT * FROM orders WHERE oid = #{ordersId}
+    </select>
+
+    <update id="doStart">
+        UPDATE orders SET state = '2', starter = #{eid}, starttime = NOW() WHERE oid = #{oid}
+    </update>
+
+</mapper>

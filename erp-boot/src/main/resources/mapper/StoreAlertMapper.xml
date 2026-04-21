@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.StoreAlertMapper">
+
+    <select id="findAll" resultType="com.erp.pojo.StoreAlert">
+        SELECT g.name as name, sd.num as num
+        FROM storedetail sd
+        INNER JOIN goods g ON sd.goodsId = g.gsid
+        WHERE sd.num &lt; 10 AND g.state = '1'
+        ORDER BY sd.num ASC
+    </select>
+
+    <select id="findAllWarm" resultType="com.erp.pojo.StoreAlert">
+        SELECT g.name as name, sd.num as num
+        FROM storedetail sd
+        INNER JOIN goods g ON sd.goodsId = g.gsid
+        WHERE sd.num &lt; 20 AND g.state = '1'
+        ORDER BY sd.num ASC
+    </select>
+
+</mapper>

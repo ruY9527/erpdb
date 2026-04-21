@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.erp.mapper.GoodsMapper">
+
+    <resultMap id="GoodsResultMap" type="com.erp.pojo.Goods">
+        <id property="gsid" column="gsid"/>
+        <result property="name" column="name"/>
+        <result property="origin" column="origin"/>
+        <result property="producer" column="producer"/>
+        <result property="unit" column="unit"/>
+        <result property="inprice" column="inprice"/>
+        <result property="outprice" column="outprice"/>
+        <result property="goodsTypeId" column="goodstypeId"/>
+        <result property="state" column="state"/>
+    </resultMap>
+
+    <select id="findAll" resultMap="GoodsResultMap">
+        SELECT * FROM goods WHERE state = '1'
+        <if test="name != null and name != ''">
+            AND name LIKE CONCAT('%', #{name}, '%')
+        </if>
+    </select>
+
+    <insert id="add">
+        INSERT INTO goods (name, origin, producer, unit, inprice, outprice, goodstypeId, state)
+        VALUES (#{name}, #{origin}, #{producer}, #{unit}, #{inprice}, #{outprice}, #{goodsTypeId}, '1')
+    </insert>
+
+    <select id="getPojoById" resultMap="GoodsResultMap">
+        SELECT * FROM goods WHERE gsid = #{gsid}
+    </select>
+
+    <delete id="delete">
+        UPDATE goods SET state = '0' WHERE gsid = #{gsid}
+    </delete>
+
+    <update id="update">
+        UPDATE goods
+        SET name = #{name}, origin = #{origin}, producer = #{producer},
+            unit = #{unit}, inprice = #{inprice}, outprice = #{outprice},
+            goodstypeId = #{goodsTypeId}
+        <if test="state != null and state != ''">
+            , state = #{state}
+        </if>
+        WHERE gsid = #{gsid}
+    </update>
+
+    <select id="findAllBySalesReturn" resultMap="GoodsResultMap">
+        SELECT * FROM goods WHERE state = '1'
+        <if test="msg != null and msg != ''">
+            AND name LIKE CONCAT('%', #{msg}, '%')
+        </if>
+    </select>
+
+    <select id="getCount" resultType="Integer">
+        SELECT COUNT(*) FROM goods WHERE state = '1'
+    </select>
+
+    <select id="findByName" resultMap="GoodsResultMap">
+        SELECT * FROM goods WHERE name LIKE CONCAT('%', #{name}, '%') AND state = '1'
+    </select>
+
+</mapper>
