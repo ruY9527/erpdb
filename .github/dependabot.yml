@@ -1,0 +1,15 @@
+# Dependabot 配置文件
+# 设置 open-pull-requests-limit 为 0 可阻止 Dependabot 创建 PR 和分支
+
+version: 2
+updates:
+  # 禁用 Maven 依赖更新
+  - package-ecosystem: "maven"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    # 设置为 0 表示不自动创建 PR
+    open-pull-requests-limit: 0
+    # 不忽略任何依赖，但不会创建 PR
+    ignore:
+      - dependency-name: "*"
