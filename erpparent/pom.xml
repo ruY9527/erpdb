@@ -18,35 +18,35 @@
 
     <!-- 集中定义依赖版本号 -->
     <properties>
-        <junit.version>4.12</junit.version>
-        <spring.version>4.2.4.RELEASE</spring.version>
-        <mybatis.version>3.4.6</mybatis.version>
-        <mybatis.spring.version>1.3.0</mybatis.spring.version>
+        <junit.version>4.13.2</junit.version>
+        <spring.version>5.3.31</spring.version>
+        <mybatis.version>3.5.14</mybatis.version>
+        <mybatis.spring.version>2.1.1</mybatis.spring.version>
         <mybatis.paginator.version>1.2.15</mybatis.paginator.version>
-        <mysql.version>5.1.32</mysql.version>
-        <slf4j.version>1.6.4</slf4j.version>
-        <jackson.version>2.8.11</jackson.version>
-        <druid.version>1.0.9</druid.version>
-        <httpclient.version>4.5</httpclient.version>
+        <mysql.version>8.0.33</mysql.version>
+        <slf4j.version>1.7.36</slf4j.version>
+        <jackson.version>2.15.3</jackson.version>
+        <druid.version>1.2.21</druid.version>
+        <httpclient.version>4.5.14</httpclient.version>
         <jstl.version>1.2</jstl.version>
-        <servlet-api.version>2.5</servlet-api.version>
-        <jsp-api.version>2.0</jsp-api.version>
-        <joda-time.version>2.5</joda-time.version>
-        <commons-lang3.version>3.3.2</commons-lang3.version>
-        <commons-io.version>1.3.2</commons-io.version>
-        <commons-net.version>3.3</commons-net.version>
-        <pagehelper.version>5.1.6</pagehelper.version>
-        <jsqlparser.version>0.9.1</jsqlparser.version>
-        <commons-fileupload.version>1.3.3</commons-fileupload.version>
-        <jedis.version>2.7.2</jedis.version>
-        <solrj.version>4.10.3</solrj.version>
-        <dubbo.version>2.5.3</dubbo.version>
-        <zookeeper.version>3.5.5</zookeeper.version>
-        <zkclient.version>0.1</zkclient.version>
-        <activemq.version>5.11.2</activemq.version>
-        <freemarker.version>2.3.23</freemarker.version>
-        <quartz.version>2.2.2</quartz.version>
-        <shiro.ver>1.2.3</shiro.ver>
+        <servlet-api.version>4.0.1</servlet-api.version>
+        <jsp-api.version>2.3.3</jsp-api.version>
+        <joda-time.version>2.12.5</joda-time.version>
+        <commons-lang3.version>3.14.0</commons-lang3.version>
+        <commons-io.version>2.15.1</commons-io.version>
+        <commons-net.version>3.10.0</commons-net.version>
+        <pagehelper.version>5.3.3</pagehelper.version>
+        <jsqlparser.version>4.6</jsqlparser.version>
+        <commons-fileupload.version>1.5</commons-fileupload.version>
+        <jedis.version>4.4.3</jedis.version>
+        <solrj.version>8.11.2</solrj.version>
+        <dubbo.version>2.7.23</dubbo.version>
+        <zookeeper.version>3.8.4</zookeeper.version>
+        <zkclient.version>0.11</zkclient.version>
+        <activemq.version>5.18.3</activemq.version>
+        <freemarker.version>2.3.32</freemarker.version>
+        <quartz.version>2.3.2</quartz.version>
+        <shiro.ver>1.13.0</shiro.ver>
     </properties>
 
     <dependencyManagement>
@@ -127,8 +127,8 @@
             </dependency>
             <!-- MySql -->
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
                 <version>${mysql.version}</version>
             </dependency>
             <!-- 连接池 -->
@@ -181,13 +181,13 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
+                <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet-api.version}</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
-                <groupId>javax.servlet</groupId>
-                <artifactId>jsp-api</artifactId>
+                <groupId>javax.servlet.jsp</groupId>
+                <artifactId>javax.servlet.jsp-api</artifactId>
                 <version>${jsp-api.version}</version>
                 <scope>provided</scope>
             </dependency>
