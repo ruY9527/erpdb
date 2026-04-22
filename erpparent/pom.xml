@@ -43,7 +43,7 @@
         <dubbo.version>2.7.23</dubbo.version>
         <zookeeper.version>3.8.4</zookeeper.version>
         <zkclient.version>0.11</zkclient.version>
-        <activemq.version>5.18.3</activemq.version>
+        <activemq.version>5.19.5</activemq.version>
         <freemarker.version>2.3.32</freemarker.version>
         <quartz.version>2.3.2</quartz.version>
         <shiro.ver>1.13.0</shiro.ver>
