@@ -46,7 +46,7 @@
         <activemq.version>5.18.3</activemq.version>
         <freemarker.version>2.3.32</freemarker.version>
         <quartz.version>2.3.2</quartz.version>
-        <shiro.ver>1.13.0</shiro.ver>
+        <shiro.ver>2.1.0</shiro.ver>
     </properties>
 
     <dependencyManagement>
